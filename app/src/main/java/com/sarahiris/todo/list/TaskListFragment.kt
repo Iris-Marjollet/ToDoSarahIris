@@ -1,5 +1,6 @@
 package com.sarahiris.todo.list
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sarahiris.todo.R
+import com.sarahiris.todo.databinding.FragmentTaskListBinding
 import java.util.UUID
 
 class TaskListFragment : Fragment() {
@@ -18,22 +20,25 @@ class TaskListFragment : Fragment() {
         Task(id = "id_3", title = "Task 3")
     )
     private val adapter = TaskListAdapter()
+    private lateinit var binding : FragmentTaskListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
+        binding = FragmentTaskListBinding.inflate(inflater, container, false)
+        val rootView =  binding.root
+        //val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
         adapter.submitList(taskList)
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler)
+        val recyclerView = binding.recycler
         recyclerView.adapter = adapter
 
-        val addButton = view.findViewById<FloatingActionButton>(R.id.addbutton)
+        val addButton = binding.addbutton
 
         addButton.setOnClickListener {
             val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")

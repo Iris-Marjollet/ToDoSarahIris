@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sarahiris.todo.R
+import com.sarahiris.todo.databinding.FragmentTaskListBinding
+import com.sarahiris.todo.databinding.ItemTaskBinding
 
 object MyItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
     override fun areItemsTheSame(oldItem: Task, newItem: Task) : Boolean {
@@ -24,21 +26,16 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
 
 
 
-    inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val taskTextView: TextView = itemView.findViewById(R.id.task_title)
-        private val taskDescriptionTextView: TextView = itemView.findViewById(R.id.task_description)
+    inner class TaskViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(taskTitle: String, taskDescription: String ) {
-            taskTextView.text = taskTitle
-            taskDescriptionTextView.text = taskDescription
+            binding.taskTitle.text = taskTitle
+            binding.taskDescription.text = taskDescription
         }
     }
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
+        val itemView = ItemTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TaskViewHolder(itemView)
     }
 
