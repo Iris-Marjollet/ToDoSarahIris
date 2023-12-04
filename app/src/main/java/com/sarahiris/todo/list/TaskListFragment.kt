@@ -25,7 +25,7 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
-        adapter.currentList = taskList
+        adapter.submitList(taskList)
         return rootView
     }
 
@@ -43,7 +43,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun refreshAdapter() {
-        adapter.currentList = taskList
+        adapter.submitList(taskList)
         adapter.notifyDataSetChanged()
     }
 
