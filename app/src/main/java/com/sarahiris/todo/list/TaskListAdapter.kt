@@ -25,6 +25,7 @@ object MyItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
 class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItemsDiffCallback) {
 
 
+    var onClickDelete: (Task) -> Unit = {}
 
     inner class TaskViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -32,6 +33,12 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
             binding.taskTitle.text = taskTitle
             binding.taskDescription.text = taskDescription
         }
+
+        val deleteButton = binding.deletebutton
+
+
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {

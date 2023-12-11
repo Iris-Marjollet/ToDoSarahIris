@@ -29,6 +29,7 @@ class TaskListFragment : Fragment() {
         val rootView =  binding.root
         //val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
         adapter.submitList(taskList)
+
         return rootView
     }
 
@@ -47,6 +48,7 @@ class TaskListFragment : Fragment() {
 
             refreshAdapter()
         }
+
     }
 
     private fun refreshAdapter() {
