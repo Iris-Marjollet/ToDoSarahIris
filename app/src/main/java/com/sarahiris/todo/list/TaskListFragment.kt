@@ -39,6 +39,7 @@ class TaskListFragment : Fragment() {
         val resultTask = result.data?.getSerializableExtra("task") as Task?
         if(resultTask != null) {
             taskList += resultTask
+            refreshAdapter()
         }
     }
 
@@ -51,7 +52,6 @@ class TaskListFragment : Fragment() {
         addButton.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java)
             createTask.launch(intent)
-            refreshAdapter()
         }
 
         adapter.onClickDelete = { task ->
