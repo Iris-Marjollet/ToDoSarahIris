@@ -24,4 +24,11 @@
         android:src="@drawable/baseline_delete_24"
        />
 
+    <ImageButton
+        android:id="@+id/editbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_edit_24"
+        />
+
 </LinearLayout>

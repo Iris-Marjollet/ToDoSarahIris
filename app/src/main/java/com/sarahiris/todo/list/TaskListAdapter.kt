@@ -27,6 +27,7 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
 
 
     var onClickDelete: (Task) -> Unit = {}
+    var onClickEdit: (Task) -> Unit = {}
 
     inner class TaskViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -38,6 +39,12 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
 
             deleteButton.setOnClickListener {
                 onClickDelete(task)
+            }
+
+            val editButton = binding.editbutton
+
+            editButton.setOnClickListener {
+                onClickEdit(task)
             }
         }
 

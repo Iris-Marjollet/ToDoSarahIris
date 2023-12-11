@@ -31,6 +31,8 @@ class DetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val resultTask =intent.getSerializableExtra("task") as Task?
         setContent {
             ToDoSarahIrisTheme {
                 // A surface container using the 'background' color from the theme
@@ -38,14 +40,14 @@ class DetailActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Detail(onValidate = { newTask ->
-                    intent.putExtra("task", newTask)
-                    setResult(RESULT_OK, intent)
-                    finish()
-                })
-                    }
+                    Detail(resultTask, onValidate = { newTask ->
+                        intent.putExtra("task", newTask)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    })
                 }
             }
+        }
 
 
     }
@@ -53,9 +55,9 @@ class DetailActivity : ComponentActivity() {
 
 
 @Composable
-fun Detail(onValidate: (Task) -> Unit) {
+fun Detail(initialTask: Task?, onValidate: (Task) -> Unit) {
 
-    var task by remember { mutableStateOf(Task(id = UUID.randomUUID().toString(), title = "", description = "")) }
+    var task by remember {mutableStateOf(initialTask ?: Task(id = UUID.randomUUID().toString(), title = "", description = ""))}
 
     Column(
         modifier = Modifier.padding(16.dp),

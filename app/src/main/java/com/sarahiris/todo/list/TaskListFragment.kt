@@ -46,7 +46,8 @@ class TaskListFragment : Fragment() {
     private val editTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val resultTask = result.data?.getSerializableExtra("task") as Task?
         if(resultTask != null) {
-            taskList += resultTask
+            taskList = taskList.map { if (it.id == resultTask.id) resultTask else it }
+            refreshAdapter()
         }
     }
 
@@ -65,6 +66,12 @@ class TaskListFragment : Fragment() {
         adapter.onClickDelete = { task ->
             taskList = taskList - task
             refreshAdapter()
+        }
+
+        adapter.onClickEdit = { task ->
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("task", task)
+            editTask.launch(intent)
         }
 
     }
