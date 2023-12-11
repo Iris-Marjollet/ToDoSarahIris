@@ -1,6 +1,7 @@
 package com.sarahiris.todo.detail
 
 import android.os.Bundle
+import android.view.Surface
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sarahiris.todo.detail.ui.theme.ToDoSarahIrisTheme
+import com.sarahiris.todo.list.Task
+import java.util.UUID
 
 class DetailActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,23 +33,21 @@ class DetailActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Detail("Android")
+                    Detail(onValidate = { newTask ->
+                    intent.putExtra("task", newTask)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                })
+                    }
                 }
             }
-        }
     }
 }
 
-/*@Composable
-fun Detail(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Task Detail",
-        modifier = modifier
-    )
-}*/
 
 @Composable
-fun Detail(name: String, modifier: Modifier = Modifier) {
+fun Detail(onValidate: (Task) -> Unit) {
+
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -55,7 +57,6 @@ fun Detail(name: String, modifier: Modifier = Modifier) {
         Text(
             text = "Task Detail",
             style = MaterialTheme.typography.headlineLarge,
-            modifier = modifier
         )
 
         Text(
@@ -68,7 +69,8 @@ fun Detail(name: String, modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                // Action à effectuer lors du clic sur le bouton
+                val newTask = Task(id = UUID.randomUUID().toString(), title = "New Task !")
+                onValidate(newTask)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -81,11 +83,11 @@ fun Detail(name: String, modifier: Modifier = Modifier) {
 
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun DetailPreview() {
     ToDoSarahIrisTheme {
         Detail("Android")
     }
-}
+}*/

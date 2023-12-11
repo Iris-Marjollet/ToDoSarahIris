@@ -6,6 +6,7 @@ import android.system.Os.remove
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.sarahiris.todo.databinding.FragmentTaskListBinding
 import com.sarahiris.todo.detail.DetailActivity
@@ -34,6 +35,13 @@ class TaskListFragment : Fragment() {
         return rootView
     }
 
+    private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val resultTask = result.data?.getSerializableExtra("task") as Task?
+        if(resultTask != null) {
+            taskList += resultTask
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val recyclerView = binding.recycler
         recyclerView.adapter = adapter
@@ -41,12 +49,8 @@ class TaskListFragment : Fragment() {
         val addButton = binding.addbutton
 
         addButton.setOnClickListener {
-            val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
-            taskList = taskList + newTask
             val intent = Intent(context, DetailActivity::class.java)
-            startActivity(intent)
-
-
+            createTask.launch(intent)
             refreshAdapter()
         }
 
