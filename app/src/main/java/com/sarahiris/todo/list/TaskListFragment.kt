@@ -42,6 +42,14 @@ class TaskListFragment : Fragment() {
         }
     }
 
+    private val editTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val resultTask = result.data?.getSerializableExtra("task") as Task?
+        if(resultTask != null) {
+            taskList += resultTask
+        }
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val recyclerView = binding.recycler
         recyclerView.adapter = adapter

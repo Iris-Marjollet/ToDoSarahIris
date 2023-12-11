@@ -41,6 +41,8 @@ class DetailActivity : ComponentActivity() {
                     }
                 }
             }
+
+
     }
 }
 
