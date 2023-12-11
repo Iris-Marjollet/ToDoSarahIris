@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sarahiris.todo.R
 import com.sarahiris.todo.databinding.FragmentTaskListBinding
 import com.sarahiris.todo.databinding.ItemTaskBinding
+import java.util.UUID
 
 object MyItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
     override fun areItemsTheSame(oldItem: Task, newItem: Task) : Boolean {
@@ -29,12 +30,16 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
 
     inner class TaskViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(taskTitle: String, taskDescription: String ) {
-            binding.taskTitle.text = taskTitle
-            binding.taskDescription.text = taskDescription
-        }
+        fun bind(task: Task) {
+            binding.taskTitle.text = task.title
+            binding.taskDescription.text = task.description
 
-        val deleteButton = binding.deletebutton
+            val deleteButton = binding.deletebutton
+
+            deleteButton.setOnClickListener {
+                onClickDelete(task)
+            }
+        }
 
 
 
@@ -47,6 +52,6 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bind(currentList[position].title, currentList[position].description )
+        holder.bind(currentList[position])
     }
 }

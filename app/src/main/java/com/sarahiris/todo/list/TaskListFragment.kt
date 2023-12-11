@@ -2,6 +2,7 @@ package com.sarahiris.todo.list
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.system.Os.remove
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,8 +48,12 @@ class TaskListFragment : Fragment() {
             refreshAdapter()
         }
 
-    }
+        adapter.onClickDelete = { task ->
+            taskList = taskList - task
+            refreshAdapter()
+        }
 
+    }
     private fun refreshAdapter() {
         adapter.submitList(taskList)
         adapter.notifyDataSetChanged()
