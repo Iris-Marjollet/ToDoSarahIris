@@ -12,9 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,6 +55,8 @@ class DetailActivity : ComponentActivity() {
 @Composable
 fun Detail(onValidate: (Task) -> Unit) {
 
+    var task by remember { mutableStateOf(Task(id = UUID.randomUUID().toString(), title = "", description = "")) }
+
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -61,18 +68,26 @@ fun Detail(onValidate: (Task) -> Unit) {
             style = MaterialTheme.typography.headlineLarge,
         )
 
-        Text(
-            text = "title",
+        OutlinedTextField(
+            value = task.title,
+            onValueChange = { newTitle ->
+                task = task.copy(title = newTitle)
+            },
+            label = { Text("Title") }
         )
 
-        Text(
-            text = "description"
+        OutlinedTextField(
+            value = task.description,
+            onValueChange = { newDescription ->
+                task = task.copy(description = newDescription)
+            },
+            label = { Text("Description") }
         )
+
 
         Button(
             onClick = {
-                val newTask = Task(id = UUID.randomUUID().toString(), title = "New Task !")
-                onValidate(newTask)
+                onValidate(task)
             },
             modifier = Modifier
                 .fillMaxWidth()
