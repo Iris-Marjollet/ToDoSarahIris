@@ -1,15 +1,13 @@
 package com.sarahiris.todo.list
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.sarahiris.todo.R
 import com.sarahiris.todo.databinding.FragmentTaskListBinding
+import com.sarahiris.todo.detail.DetailActivity
 import java.util.UUID
 
 class TaskListFragment : Fragment() {
@@ -43,6 +41,10 @@ class TaskListFragment : Fragment() {
         addButton.setOnClickListener {
             val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
             taskList = taskList + newTask
+            val intent = Intent(context, DetailActivity::class.java)
+            startActivity(intent)
+
+
             refreshAdapter()
         }
     }
