@@ -22,12 +22,13 @@ object MyItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
     }
 }
 
+interface TaskListListener {
+    fun onClickDelete(task: Task)
+    fun onClickEdit(task: Task)
+}
 
-class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItemsDiffCallback) {
+class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItemsDiffCallback) {
 
-
-    var onClickDelete: (Task) -> Unit = {}
-    var onClickEdit: (Task) -> Unit = {}
 
     inner class TaskViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -38,18 +39,15 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItem
             val deleteButton = binding.deletebutton
 
             deleteButton.setOnClickListener {
-                onClickDelete(task)
+                listener.onClickDelete(task)
             }
 
             val editButton = binding.editbutton
 
             editButton.setOnClickListener {
-                onClickEdit(task)
+                listener.onClickEdit(task)
             }
         }
-
-
-
 
     }
 
