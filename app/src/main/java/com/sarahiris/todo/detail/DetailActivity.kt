@@ -1,5 +1,6 @@
 package com.sarahiris.todo.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Surface
 import androidx.activity.ComponentActivity
@@ -27,12 +28,32 @@ import com.sarahiris.todo.detail.ui.theme.ToDoSarahIrisTheme
 import com.sarahiris.todo.list.Task
 import java.util.UUID
 
+@Suppress("DEPRECATION")
 class DetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val resultTask =intent.getSerializableExtra("task") as Task?
+
+        var sharedTask: Task? = null
+
+        when (intent?.action) {
+            Intent.ACTION_SEND -> {
+                if ("text/plain" == intent.type) {
+                    val description =
+                        intent.getStringExtra(Intent.EXTRA_TEXT) // Handle text being sent
+                    if (description != null) {
+                        sharedTask = Task(id = UUID.randomUUID().toString(), "", description)
+                    }
+                }
+            }
+        }
+
+        var resultTask = intent.getSerializableExtra("task") as Task?
+        if(sharedTask != null) {
+            resultTask = sharedTask
+        }
+
         setContent {
             ToDoSarahIrisTheme {
                 // A surface container using the 'background' color from the theme
@@ -48,8 +69,6 @@ class DetailActivity : ComponentActivity() {
                 }
             }
         }
-
-
     }
 }
 

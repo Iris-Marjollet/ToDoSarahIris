@@ -14,13 +14,30 @@ import java.util.UUID
 
 class TaskListFragment : Fragment() {
 
+
+
     private var taskList = listOf(
         Task(id = "id_1", title = "Task 1", description = "description 1"),
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     )
-    private val adapter = TaskListAdapter()
+
+    private val adapterListener : TaskListListener = object : TaskListListener {
+        override fun onClickDelete(task: Task) {
+            taskList = taskList - task
+            refreshAdapter()}
+        override fun onClickEdit(task: Task) {
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("task", task)
+            editTask.launch(intent)}
+    }
+    private val adapter =  TaskListAdapter(adapterListener)
     private lateinit var binding : FragmentTaskListBinding
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable("taskList", ArrayList(taskList))
+        super.onSaveInstanceState(outState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,15 +80,12 @@ class TaskListFragment : Fragment() {
             createTask.launch(intent)
         }
 
-        adapter.onClickDelete = { task ->
-            taskList = taskList - task
-            refreshAdapter()
-        }
-
-        adapter.onClickEdit = { task ->
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("task", task)
-            editTask.launch(intent)
+        if (savedInstanceState != null) {
+            val savedTaskList = savedInstanceState.getSerializable("taskList") as? ArrayList<Task>
+            if (savedTaskList != null) {
+                taskList = savedTaskList
+                refreshAdapter()
+            }
         }
 
     }
