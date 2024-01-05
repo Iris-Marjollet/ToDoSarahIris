@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import androidx.lifecycle.*
 import com.sarahiris.todo.R
+import com.sarahiris.todo.list.TaskWebService
 import kotlinx.coroutines.launch
 
 
@@ -20,6 +21,13 @@ object Api : AppCompatActivity(){
 
         println("lazy web service")
         retrofit.create(UserWebService::class.java)
+
+    }
+
+    val taskWebService : TaskWebService by lazy {
+
+        println("lazy task web service")
+        retrofit.create(TaskWebService::class.java)
 
     }
 

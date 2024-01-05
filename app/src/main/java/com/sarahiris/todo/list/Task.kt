@@ -1,4 +1,15 @@
 package com.sarahiris.todo.list
 
-data class Task(val id: String, val title: String, val description: String = "Description par défaut") : java.io.Serializable
+import kotlinx.serialization.SerialName
+
+data class Task(
+
+    @SerialName("id")
+    val id: String,
+    @SerialName("title")
+    val title: String,
+    @SerialName("description")
+    val description: String = "Description par défaut"
+) : java.io.Serializable
+
 
