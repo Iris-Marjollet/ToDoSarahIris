@@ -1,23 +1,33 @@
 package com.sarahiris.todo.data
 
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import androidx.lifecycle.*
+import com.sarahiris.todo.R
+import kotlinx.coroutines.launch
 
 
-object Api {
+object Api : AppCompatActivity(){
     private const val TOKEN = "d016dcdac97c11bb1a0476c904a79504f914cdc5"
 
     val userWebService : UserWebService by lazy {
+
+        println("lazy web service")
         retrofit.create(UserWebService::class.java)
 
     }
 
+
     private val retrofit by lazy {
         // client HTTP
+
+        println("HTTP CLIENT")
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor { chain ->
