@@ -6,13 +6,22 @@ import android.system.Os.remove
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.sarahiris.todo.R
+import com.sarahiris.todo.data.Api
+import com.sarahiris.todo.data.Api.findViewById
 import com.sarahiris.todo.databinding.FragmentTaskListBinding
 import com.sarahiris.todo.detail.DetailActivity
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class TaskListFragment : Fragment() {
+
+    val viewModel: TasksListViewModel by viewModels()
 
 
 
@@ -88,7 +97,19 @@ class TaskListFragment : Fragment() {
             }
         }
 
+
+        // Abonnez le fragment aux changements du StateFlow du ViewModel
+        lifecycleScope.launch {
+            viewModel.tasksStateFlow.collect { newList ->
+                // Mettez à jour la liste dans l'adapter avec la nouvelle liste du StateFlow
+                taskList = newList
+                refreshAdapter()
+            }
+        }
     }
+
+
+
     private fun refreshAdapter() {
         adapter.submitList(taskList)
         adapter.notifyDataSetChanged()
