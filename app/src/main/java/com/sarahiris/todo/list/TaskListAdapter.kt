@@ -27,6 +27,7 @@ interface TaskListListener {
     fun onClickEdit(task: Task)
 }
 
+//HERE////////////////////
 class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItemsDiffCallback) {
 
 

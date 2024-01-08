@@ -20,6 +20,9 @@ class TasksListViewModel : ViewModel() {
                 return@launch
             }
             val fetchedTasks = response.body()!!
+            println("HERE")
+            println(fetchedTasks.size)
+            //val fetchedTasks = Api.taskWebService.fetchTasks().body()!!
             tasksStateFlow.value = fetchedTasks // on modifie le flow, ce qui déclenche ses observers
         }
     }

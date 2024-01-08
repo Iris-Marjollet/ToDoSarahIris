@@ -10,10 +10,12 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.sarahiris.todo.R
 import com.sarahiris.todo.data.Api
 import com.sarahiris.todo.data.Api.findViewById
+import com.sarahiris.todo.data.User
 import com.sarahiris.todo.databinding.FragmentTaskListBinding
 import com.sarahiris.todo.detail.DetailActivity
 import kotlinx.coroutines.launch
@@ -30,6 +32,12 @@ class TaskListFragment : Fragment() {
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     )
+
+
+    fun setTaskList(task: List<Task>){
+        taskList = task
+
+    }
 
     private val adapterListener : TaskListListener = object : TaskListListener {
         override fun onClickDelete(task: Task) {
@@ -58,6 +66,12 @@ class TaskListFragment : Fragment() {
         //val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
         adapter.submitList(taskList)
 
+        val rootView2 = inflater.inflate(R.layout.fragment_task_list, container, false)
+
+        val userTextView = rootView2.findViewById<TextView>(R.id.headerText)
+
+
+
         return rootView
     }
 
@@ -82,6 +96,8 @@ class TaskListFragment : Fragment() {
         val recyclerView = binding.recycler
         recyclerView.adapter = adapter
 
+
+
         val addButton = binding.addbutton
 
         addButton.setOnClickListener {
@@ -103,9 +119,48 @@ class TaskListFragment : Fragment() {
             viewModel.tasksStateFlow.collect { newList ->
                 // Mettez à jour la liste dans l'adapter avec la nouvelle liste du StateFlow
                 taskList = newList
+                //taskList = Api.taskWebService.fetchTasks().body()!!
                 refreshAdapter()
             }
         }
+
+
+    }
+
+    override fun onResume() {
+        println("IN RESUME")
+        super.onResume()
+
+        lifecycleScope.launch {
+
+            println("asynch")
+            val user = Api.userWebService.fetchUser().body()!!
+
+            binding?.headerText?.text = user.name
+            //val userTextView = findViewById<TextView>(R.id.headerText)
+            //userTextView.text = user.name
+
+            //val list = Api.taskWebService.fetchTasks().body()!!
+
+
+
+
+            /*val taskListFragment =
+                supportFragmentManager.findFragmentByTag("TaskListFragmentTag") as? TaskListFragment
+            println("BEFORE")
+            taskListFragment?.let { fragment ->
+
+                // Refresh the task list using the ViewModel
+                println("REFRESH")
+                fragment.viewModel.refresh()
+            }*/
+
+            println("REFRESH")
+            viewModel.refresh()
+        }
+
+
+
     }
 
 

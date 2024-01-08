@@ -54,7 +54,7 @@ object Api : AppCompatActivity(){
 
 
 
-        // instance retrofit pour implémenter les webServices:
+        // instance retrofit pour  les webServimplémenterices:
         Retrofit.Builder()
             .baseUrl("https://api.todoist.com/")
             .client(okHttpClient)
