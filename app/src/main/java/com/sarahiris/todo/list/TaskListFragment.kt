@@ -2,7 +2,6 @@ package com.sarahiris.todo.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.system.Os.remove
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +9,14 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.sarahiris.todo.R
 import com.sarahiris.todo.data.Api
-import com.sarahiris.todo.data.Api.findViewById
-import com.sarahiris.todo.data.User
 import com.sarahiris.todo.databinding.FragmentTaskListBinding
 import com.sarahiris.todo.detail.DetailActivity
 import kotlinx.coroutines.launch
-import java.util.UUID
+import coil.load
+import com.sarahiris.todo.user.UserActivity
 
 class TaskListFragment : Fragment() {
 
@@ -125,6 +122,12 @@ class TaskListFragment : Fragment() {
         }
 
 
+        binding.avatarImage.setOnClickListener {
+            val intent = Intent(activity, UserActivity::class.java)
+            startActivity(intent)
+        }
+
+
     }
 
     override fun onResume() {
@@ -137,12 +140,15 @@ class TaskListFragment : Fragment() {
             val user = Api.userWebService.fetchUser().body()!!
 
             binding?.headerText?.text = user.name
+
+            binding?.avatarImage?.load(user.avatar) {
+                error(R.drawable.ic_launcher_background) //image par défault en cas d'erreur
+            } //image
+
             //val userTextView = findViewById<TextView>(R.id.headerText)
             //userTextView.text = user.name
 
             //val list = Api.taskWebService.fetchTasks().body()!!
-
-
 
 
             /*val taskListFragment =
