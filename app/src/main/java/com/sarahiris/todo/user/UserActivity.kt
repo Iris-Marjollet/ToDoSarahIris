@@ -1,11 +1,14 @@
 package com.sarahiris.todo.user
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.layout.Column
@@ -19,21 +22,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import coil.compose.AsyncImage
+import com.sarahiris.todo.data.Api
 import com.sarahiris.todo.user.ui.theme.ToDoSarahIrisTheme
+import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 class UserActivity : ComponentActivity() {
+
+    private val capturedUri by lazy {
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             var bitmap: Bitmap? by remember { mutableStateOf(null) }
             var uri: Uri? by remember { mutableStateOf(null) }
-            val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
-                bitmap = it
 
+
+            val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                if (success) uri = capturedUri
+            }
+            val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+                uri = it
+                lifecycleScope.launch {
+                    uri?.let { it1 -> Api.userWebService.updateAvatar(it1.toRequestBody()) }
+                }
+            }
+            val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
             }
             Column {
                 AsyncImage(
@@ -42,15 +69,37 @@ class UserActivity : ComponentActivity() {
                     contentDescription = null
                 )
                 Button(
-                    onClick = {takePicture.launch()},
+                    onClick = {takePicture.launch(capturedUri)},
                     content = { Text("Take picture") }
                 )
                 Button(
-                    onClick = {},
+                    onClick = {requestPermissionLauncher.launch((Manifest.permission.READ_EXTERNAL_STORAGE)) },
                     content = { Text("Pick photo") }
                 )
             }
         }
+    }
+
+    private fun Bitmap.toRequestBody(): MultipartBody.Part {
+        val tmpFile = File.createTempFile("avatar", "jpg")
+        tmpFile.outputStream().use { // *use*: open et close automatiquement
+            this.compress(Bitmap.CompressFormat.JPEG, 100, it) // *this* est le bitmap ici
+        }
+        return MultipartBody.Part.createFormData(
+            name = "avatar",
+            filename = "avatar.jpg",
+            body = tmpFile.readBytes().toRequestBody()
+        )
+    }
+
+    private fun Uri.toRequestBody(): MultipartBody.Part {
+        val fileInputStream = contentResolver.openInputStream(this)!!
+        val fileBody = fileInputStream.readBytes().toRequestBody()
+        return MultipartBody.Part.createFormData(
+            name = "avatar",
+            filename = "avatar.jpg",
+            body = fileBody
+        )
     }
 }
 
@@ -69,3 +118,4 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+

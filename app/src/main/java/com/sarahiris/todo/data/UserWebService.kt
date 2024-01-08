@@ -20,16 +20,6 @@ interface UserWebService : LifecycleObserver {
     @POST("sync/v9/update_avatar")
     suspend fun updateAvatar(@Part avatar: MultipartBody.Part): Response<User>
 
-    private fun Bitmap.toRequestBody(): MultipartBody.Part {
-        val tmpFile = File.createTempFile("avatar", "jpg")
-        tmpFile.outputStream().use { // *use*: open et close automatiquement
-            this.compress(Bitmap.CompressFormat.JPEG, 100, it) // *this* est le bitmap ici
-        }
-        return MultipartBody.Part.createFormData(
-            name = "avatar",
-            filename = "avatar.jpg",
-            body = tmpFile.readBytes().toRequestBody()
-        )
-    }
+
 
 }
