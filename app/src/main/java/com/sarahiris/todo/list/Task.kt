@@ -9,7 +9,7 @@ data class Task(
 
     @SerialName("id")
     val id: String,
-    @SerialName("title")
+    @SerialName("content")
     val title: String,
     @SerialName("description")
     val description: String = "Description par défaut"
