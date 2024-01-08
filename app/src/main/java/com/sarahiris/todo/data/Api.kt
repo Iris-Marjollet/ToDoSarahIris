@@ -32,6 +32,7 @@ object Api : AppCompatActivity(){
     }
 
 
+
     private val retrofit by lazy {
         // client HTTP
 
@@ -46,10 +47,12 @@ object Api : AppCompatActivity(){
             }
             .build()
 
+
         // transforme le JSON en objets kotlin et inversement
         val jsonSerializer = Json {
             ignoreUnknownKeys = true
             coerceInputValues = true
+            encodeDefaults = true
         }
 
 
@@ -60,5 +63,7 @@ object Api : AppCompatActivity(){
             .client(okHttpClient)
             .addConverterFactory(jsonSerializer.asConverterFactory("application/json".toMediaType()))
             .build()
+
     }
+
 }
