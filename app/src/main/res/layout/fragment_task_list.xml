@@ -31,7 +31,8 @@
             android:text="Your Header Text"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="5dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -47,7 +48,7 @@
         android:id="@+id/todoTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="50dp"
         android:text="Todo:"
         android:textSize="20dp"
         android:textStyle="bold"
