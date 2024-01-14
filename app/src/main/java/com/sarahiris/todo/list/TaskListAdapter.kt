@@ -27,7 +27,7 @@ interface TaskListListener {
     fun onClickEdit(task: Task)
 }
 
-//HERE////////////////////
+
 class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyItemsDiffCallback) {
 
 
@@ -37,11 +37,21 @@ class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskLi
             binding.taskTitle.text = task.title
             binding.taskDescription.text = task.description
 
+            /*
             val deleteButton = binding.deletebutton
 
             deleteButton.setOnClickListener {
                 listener.onClickDelete(task)
+            }*/
+
+            val checkBox = binding.taskCheckbox  // Assuming task_checkbox is the ID of your CheckBox
+
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    listener.onClickDelete(task)
+                }
             }
+
 
             val editButton = binding.editbutton
 

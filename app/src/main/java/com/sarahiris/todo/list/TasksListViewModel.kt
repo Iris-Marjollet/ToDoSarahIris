@@ -82,8 +82,5 @@ class TasksListViewModel : ViewModel() {
 
         }
     }
-    // à compléter plus tard:
-    //fun add(task: Task) {}
-    //fun edit(task: Task) {}
-    //fun remove(task: Task) {}
+
 }

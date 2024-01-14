@@ -1,6 +1,8 @@
 package com.sarahiris.todo.user
 
 import android.Manifest
+import android.content.ContentValues
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -28,9 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import coil.compose.AsyncImage
+import com.google.android.material.snackbar.Snackbar
 import com.sarahiris.todo.data.Api
 import com.sarahiris.todo.user.ui.theme.ToDoSarahIrisTheme
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonNull.content
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -38,7 +43,7 @@ import java.io.File
 class UserActivity : ComponentActivity() {
 
     private val capturedUri by lazy {
-        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues())
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues() )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +65,8 @@ class UserActivity : ComponentActivity() {
             val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                } else {
+                    showMessage("Permission denied. Cannot pick a photo.")
                 }
             }
             Column {
@@ -73,11 +80,40 @@ class UserActivity : ComponentActivity() {
                     content = { Text("Take picture") }
                 )
                 Button(
-                    onClick = {requestPermissionLauncher.launch((Manifest.permission.READ_EXTERNAL_STORAGE)) },
-                    content = { Text("Pick photo") }
+                    onClick = {
+                        pickPhotoWithPermission(requestPermissionLauncher, pickMedia)},
+                        //requestPermissionLauncher.launch((Manifest.permission.READ_EXTERNAL_STORAGE)) },
+                        content = { Text("Pick photo") }
+                )
+                Button(
+                    onClick = { super.onBackPressed() },
+                    content = { Text("Go back") }
                 )
             }
         }
+    }
+
+    private fun pickPhotoWithPermission(requestPermissionLauncher: ActivityResultLauncher<String>, pickMedia: ActivityResultLauncher<PickVisualMediaRequest>) {
+        val storagePermission = Manifest.permission.READ_EXTERNAL_STORAGE
+        val permissionStatus = checkSelfPermission(storagePermission)
+        val isAlreadyAccepted = permissionStatus == PackageManager.PERMISSION_GRANTED
+        val isExplanationNeeded = shouldShowRequestPermissionRationale(storagePermission)
+
+        when {
+            isAlreadyAccepted -> {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
+            isExplanationNeeded -> {
+                showMessage("Permission needed to pick a photo.")
+            }
+            else -> {
+                requestPermissionLauncher.launch(storagePermission)
+            }
+        }
+    }
+
+    private fun showMessage(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun Bitmap.toRequestBody(): MultipartBody.Part {
@@ -101,6 +137,7 @@ class UserActivity : ComponentActivity() {
             body = fileBody
         )
     }
+
 }
 
 @Composable

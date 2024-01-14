@@ -76,8 +76,6 @@ class TaskListFragment : Fragment() {
         val recyclerView = binding.recycler
         recyclerView.adapter = adapter
 
-
-
         val addButton = binding.addbutton
 
         addButton.setOnClickListener {
@@ -93,10 +91,8 @@ class TaskListFragment : Fragment() {
         }
 
 
-        // Abonnez le fragment aux changements du StateFlow du ViewModel
         lifecycleScope.launch {
             viewModel.tasksStateFlow.collect { newList ->
-                // Mettez à jour la liste dans l'adapter avec la nouvelle liste du StateFlow
                 taskList = newList
                 refreshAdapter()
             }
